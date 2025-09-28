@@ -1,0 +1,8 @@
+math.abs
+math.max
+math.sqrt
+reverse,split,join
+function customAbs(n) {
+  return n < 0 ? -n : n;
+}
++-/*%
