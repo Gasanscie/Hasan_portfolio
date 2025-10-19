@@ -80,3 +80,90 @@ const user = {
 setTimeout(function delayFunc() {
   console.log("Waited")
 }, 1000)
+
+
+
+
+
+// Виртуальная файловая система
+let fs = {
+  root: {
+    type: 'dir',
+    children: {}
+  }
+};
+
+let currentPath = ['root'];
+
+// Вспомогательная функция: получить текущую директорию
+function getCurrentDir() {
+  return currentPath.reduce((dir, name) => dir.children[name], fs);
+}
+
+// mkdir — создать папку
+function mkdir(name) {
+  const dir = getCurrentDir();
+  if (!dir.children[name]) {
+    dir.children[name] = { type: 'dir', children: {} };
+    console.log(`Папка "${name}" создана.`);
+  } else {
+    console.log(`Папка "${name}" уже существует.`);
+  }
+}
+
+// dir (ls) — показать содержимое
+function dirList() {
+  const dir = getCurrentDir();
+  console.log('Содержимое:', Object.keys(dir.children));
+}
+
+// cd — перейти в папку
+function cd(name) {
+  const dir = getCurrentDir();
+  if (dir.children[name] && dir.children[name].type === 'dir') {
+    currentPath.push(name);
+    console.log(`Переход в папку "${name}"`);
+  } else {
+    console.log(`Папка "${name}" не найдена.`);
+  }
+}
+
+// ../ — на уровень выше
+function cdUp() {
+  if (currentPath.length > 1) {
+    currentPath.pop();
+    console.log('Возврат на уровень выше.');
+  } else {
+    console.log('Вы находитесь в корневой папке.');
+  }
+}
+
+// Пример 1 — создание папки
+mkdir('projects');
+
+// Пример 2 — переход в папку
+cd('projects');
+
+// Пример 3 — создание подпапки
+mkdir('app1');
+
+// Пример 4 — создание ещё одной папки
+mkdir('app2');
+
+// Пример 5 — просмотр содержимого текущей папки
+dirList(); // ['app1', 'app2']
+
+// Пример 6 — переход в app1
+cd('app1');
+
+// Пример 7 — попытка перейти в несуществующую папку
+cd('notExist');
+
+// Пример 8 — возврат на уровень выше
+cdUp();
+
+// Пример 9 — ещё один возврат (в корень)
+cdUp();
+
+// Пример 10 — вывод содержимого root
+dirList(); // ['projects']
